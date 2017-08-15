@@ -1,0 +1,36 @@
+{
+  "name": "jmt-crawler",
+  "version": "1.0.0",
+  "description": "Java Memory Tracking Crawler",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hodrigohamalho/jmt-crawler.git"
+  },
+  "keywords": [
+    "timesheet",
+    "redhat",
+    "sas"
+  ],
+  "author": "Rodrigo Ramalho - rramalho@redhat.com | hodrigohamalho@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hodrigohamalho/jmt-crawler.git"
+  },
+  "homepage": "https://github.com/hodrigohamalho/jmt-crawler#README.adoc",
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "chai-http": "^3.0.0",
+    "date-and-time": "^0.4.2",
+    "express": "^4.15.3",
+    "nock": "^9.0.13",
+    "request": "^2.81.0"
+  }
+}

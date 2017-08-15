@@ -1,0 +1,17 @@
+{
+  "name": "jmt-ui",
+  "description": "Java Memory Tracking Analyzer",
+  "version": "0.0.0",
+  "homepage": "https://github.com/hodrigohamalho/jmt-analyzer",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {    
+    "angular": "^1.6.4",
+    "angular-route": "^1.6.4",
+    "angular-loader": "^1.6.4",
+    "angular-mocks": "^1.6.4",
+    "angular-resource": "^1.6.4",
+    "angular-sanitize": "^1.6.4",
+    "angular-patternfly": "^4.0.0"
+  }
+}
