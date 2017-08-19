@@ -1,10 +1,24 @@
 <div class="row">
     <div class="col-md-12">
         <div class="page-header">
-        <h1>Dashboard</h1>
+            <h1>Dashboard</h1>
         </div>
 
-        <p>Dashboard.... .</p>
+        <div>
+            <form class="form-horizontal" role="form" ng-submit="collect()">
+                <div>
+                    <input type="text" ng-model="kubernetes.project" placeholder="project" />
+                    <input type="text" ng-model="kubernetes.podname" placeholder="POD name"/>
+                    <button type="submit" class="btn btn-primary ">
+                        <span class="fa fa-refresh"></span> Start collect!
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div ng-controller="dashboardCtrl">
+                <nvd3 options="options" data="data"></nvd3>
+            </div>
         
     </div>
 </div>

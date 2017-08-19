@@ -47,10 +47,8 @@ module.exports = function(app) {
         }
       });
 
-      console.log(memory);
+      res.send(memory);
     });
-
-    res.send('GET request to the homepage');
   });
 
   function extractValueFromField(line, field){

@@ -4,7 +4,8 @@
 var app = angular.module('jmt-ui', [
   'ngResource',
   'ngRoute',
-  'ngSanitize'
+  'ngSanitize',
+  'nvd3'
 ]);
 
 app.config(function($routeProvider) {
@@ -14,7 +15,7 @@ app.config(function($routeProvider) {
   })
   .when('/dashboard', {
     templateUrl: 'views/dashboard.html',
-    controller: 'DashboardCtrl'
+    controller: 'dashboardCtrl'
   })
   .otherwise({
       redirectTo: '/dashboard'
