@@ -6,28 +6,48 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
     heap: {
         metrics: [],
         max: [] // it needs to be in a differente array for compatibility with graph component
+    },
+    class: {
+        metrics: [],
+        max: [] 
+    },
+    code: {
+        metrics: [],
+        max: [] 
+    },
+    thread: {
+        metrics: [],
+        max: [] 
     }
   }
 
-  var crawler = function(kubernetes){
-    $scope.kubernetes = {
-        project: 'myproject',
-        podname: 'fis-rest-1-8xp34'
-    };
-      
-    $http({
-        method: 'GET',
-        url: apiHost+$scope.kubernetes.project+'/'+$scope.kubernetes.podname,
-    }).then(function successCallback(response) {
-        console.log('data collected');
-        var memory = response.data;
+    var crawler = function(kubernetes){
+        $scope.kubernetes = {
+            project: 'myproject',
+            podname: 'fis-rest-1-8xp34'
+        };
+            
+        $http({
+            method: 'GET',
+            url: apiHost+$scope.kubernetes.project+'/'+$scope.kubernetes.podname,
+        }).then(function successCallback(response) {
+            console.log('data collected');
+            var memory = response.data;
 
-        totalGraph(memory);
-        heapGraph(memory);
-    }, function errorCallback(response) {
-        console.log(response);
-    });
-  };
+            totalGraph(memory);
+            graph(memory, 'heap');
+            graph(memory, 'class');
+            graph(memory, 'code');
+            graph(memory, 'thread');
+            
+            $scope.heapMetrics = data('heap');
+            $scope.classMetrics = data('class');
+            $scope.codeMetrics = data('code');
+            $scope.threadMetrics = data('thread');
+        }, function errorCallback(response) {
+            console.log(response);
+        });
+    };
 
     $scope.collect = function (){
         $interval(function() {
@@ -44,23 +64,22 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
         }
     }
 
-    var heapGraph = function (memory){
+    var graph = function (memory, type){
         var dt = new Date();
-        memoirs.heap.metrics.push({y: memory.heap.inuse, x: dt});
-        memoirs.heap.max.push({y: memory.heap.max, x:dt});
-        $scope.heapMetrics = heapData();
+        memoirs[type].metrics.push({y: memory[type].inuse, x: dt});
+        memoirs[type].max.push({y: memory[type].max, x:dt});
     }
 
-    var heapData = function(){
+    var data = function(type){
         return [
             {
-                values: memoirs.heap.metrics, //values - represents the array of {x,y} data points
+                values: memoirs[type].metrics, //values - represents the array of {x,y} data points
                 key: 'In use', //key  - the name of the series.
                 color: '#0000FF',  //color - optional: choose your own line color.
                 area: true
             },
             {
-                values: memoirs.heap.max,
+                values: memoirs[type].max,
                 key: 'Memory available',
                 color: '#2ca02c',
                 area: true
@@ -74,7 +93,7 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
         }
     };
 
-    $scope.heapOptions = {
+    $scope.options = {
         chart: {
             type: 'lineChart',
             height: 450,

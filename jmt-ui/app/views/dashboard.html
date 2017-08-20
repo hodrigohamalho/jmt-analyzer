@@ -27,7 +27,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">Heap</div>
                         <div class="panel-body">                        
-                                <nvd3 options="heapOptions" data="heapMetrics"></nvd3>
+                            <nvd3 options="options" data="heapMetrics"></nvd3>
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,9 @@
                     <!-- CLASS -->
                     <div class="panel panel-default">
                         <div class="panel-heading">Class</div>
-                        <div class="panel-body"></div>
+                        <div class="panel-body">
+                            <nvd3 options="options" data="classMetrics"></nvd3>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -45,7 +47,9 @@
                 <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">Code</div>
-                        <div class="panel-body"></div>
+                        <div class="panel-body">
+                            <nvd3 options="options" data="codeMetrics"></nvd3>
+                        </div>
                     </div>
                 </div>
 
@@ -53,7 +57,9 @@
                 <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">Thread</div>
-                        <div class="panel-body"></div>
+                        <div class="panel-body">
+                            <nvd3 options="options" data="threadMetrics"></nvd3>
+                        </div>
                     </div>
                 </div>
             </div>
