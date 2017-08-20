@@ -1,11 +1,7 @@
 <div class="row">
     <div class="col-md-12">
-        <div class="page-header">
-            <h1>Dashboard</h1>
-        </div>
-
         <div>
-            <form class="form-horizontal" role="form" ng-submit="collect()">
+            <form class="form-horizontal kub-form" role="form" ng-submit="collect()">
                 <div>
                     <input type="text" ng-model="kubernetes.project" placeholder="project" />
                     <input type="text" ng-model="kubernetes.podname" placeholder="POD name"/>
@@ -17,8 +13,11 @@
         </div>
         
         <div ng-controller="dashboardCtrl">
-                <nvd3 options="options" data="data"></nvd3>
-            </div>
+            <nvd3 options="totalOptions" data="totalMetrics"></nvd3>
+            <nvd3 options="heapOptions" data="heapMetrics"></nvd3>
+            <nvd3 options="classOptions" data="classMetrics"></nvd3>
+            
+        </div>
         
     </div>
 </div>

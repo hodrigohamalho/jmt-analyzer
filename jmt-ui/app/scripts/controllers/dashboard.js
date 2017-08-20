@@ -1,112 +1,112 @@
-angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scope, $http) {
+angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scope, $http, $interval) {
   var apiHost = 'http://localhost:3000/';
+  var poolingInterval = 1000;
+
+  var heap = {
+      inuse: [],
+      max: []
+  };
 
   var crawler = function(kubernetes){
+    var kubernetes = {
+        project: 'myproject',
+        podname: 'fis-rest-1-8xp34'
+    };
+
+      
     $http({
-      method: 'GET',
-      url: apiHost+kubernetes.project+'/'+kubernetes.podname,
+        method: 'GET',
+        url: apiHost+kubernetes.project+'/'+kubernetes.podname,
     }).then(function successCallback(response) {
-      console.log(response.data);
+        console.log('data collected');
+        var memory = response.data;
+
+        totalGraph(memory);
+        heapGraph(memory);
     }, function errorCallback(response) {
-      console.log(response);
+        console.log(response);
     });
   };
-  
-  $scope.collect = function (){
-    console.log("collect");
-    console.log($scope.kubernetes);
-    crawler($scope.kubernetes);
-  };
 
-  $scope.options = {
-    chart: {
-        type: 'lineChart',
-        height: 450,
-        margin : {
-            top: 20,
-            right: 20,
-            bottom: 40,
-            left: 55
-        },
-        x: function(d){ return d.x; },
-        y: function(d){ return d.y; },
-        useInteractiveGuideline: true,
-        dispatch: {
-            stateChange: function(e){ console.log("stateChange"); },
-            changeState: function(e){ console.log("changeState"); },
-            tooltipShow: function(e){ console.log("tooltipShow"); },
-            tooltipHide: function(e){ console.log("tooltipHide"); }
-        },
-        xAxis: {
-            axisLabel: 'Time (ms)'
-        },
-        yAxis: {
-            axisLabel: 'Voltage (v)',
-            tickFormat: function(d){
-                return d3.format('.02f')(d);
+    $scope.collect = function (){
+        $interval(function() {
+            var memory = crawler($scope.kubernetes);
+        }, poolingInterval);  // 1 seconds
+    };
+
+    var totalGraph = function(memory){
+        $scope.totalMetrics = {
+            "title": "Total Memory",
+            "ranges": [0,memory['total']['max']],
+            "measures": [memory['total']['inuse']]
+        }
+    }
+
+    var heapGraph = function (memory){
+        heap['inuse'].push({ y: memory['heap']['inuse'], x: heap['inuse'].length });
+        heap['max'].push({ y: memory['heap']['max'], x: heap['max'].length });
+
+        $scope.heapMetrics = heapData();
+    }
+
+    var heapData = function(){
+        return [
+            {
+                values: heap['inuse'],      //values - represents the array of {x,y} data points
+                key: 'In use', //key  - the name of the series.
+                color: '#ff7f0e'  //color - optional: choose your own line color.
             },
-            axisLabelDistance: -10
+            {
+                values: heap['max'],
+                key: 'Memory available',
+                color: '#2ca02c'
+            }
+        ];
+    };
+
+    $scope.totalOptions = {
+        chart: {
+            "type": "bulletChart"
+        }
+    };
+
+    $scope.heapOptions = {
+        chart: {
+            type: 'lineChart',
+            height: 450,
+            margin : {
+                top: 20,
+                right: 20,
+                bottom: 40,
+                left: 55
+            },
+            lines: {
+                forceY: 0
+            },
+            x: function(d){ return d.x; },
+            y: function(d){ return d.y; },
+            useInteractiveGuideline: true,
+            dispatch: {
+                stateChange: function(e){ console.log("stateChange"); },
+                changeState: function(e){ console.log("changeState"); },
+                tooltipShow: function(e){ console.log("tooltipShow"); },
+                tooltipHide: function(e){ console.log("tooltipHide"); }
+            },
+            xAxis: {
+                axisLabel: 'Time (minute)'
+            },
+            yAxis: {
+                axisLabel: 'Memory (MB)',
+                axisLabelDistance: -10
+            },
+            callback: function(chart){
+                console.log("!!! lineChart callback !!!");
+            }
         },
-        callback: function(chart){
-            console.log("!!! lineChart callback !!!");
+        title: {
+            enable: true,
+            text: 'Memory Heap'
         }
-    },
-    title: {
-        enable: true,
-        text: 'Title for Line Chart'
-    },
-    subtitle: {
-        enable: true,
-        text: 'Subtitle for simple line chart. Lorem ipsum dolor sit amet, at eam blandit sadipscing, vim adhuc sanctus disputando ex, cu usu affert alienum urbanitas.',
-        css: {
-            'text-align': 'center',
-            'margin': '10px 13px 0px 7px'
-        }
-    },
-    caption: {
-        enable: true,
-        html: '<b>Figure 1.</b> Lorem ipsum dolor sit amet, at eam blandit sadipscing, <span style="text-decoration: underline;">vim adhuc sanctus disputando ex</span>, cu usu affert alienum urbanitas. <i>Cum in purto erat, mea ne nominavi persecuti reformidans.</i> Docendi blandit abhorreant ea has, minim tantas alterum pro eu. <span style="color: darkred;">Exerci graeci ad vix, elit tacimates ea duo</span>. Id mel eruditi fuisset. Stet vidit patrioque in pro, eum ex veri verterem abhorreant, id unum oportere intellegam nec<sup>[1, <a href="https://github.com/krispo/angular-nvd3" target="_blank">2</a>, 3]</sup>.',
-        css: {
-            'text-align': 'justify',
-            'margin': '10px 13px 0px 7px'
-        }
-    }
-};
-
-$scope.data = sinAndCos();
-
-/*Random Data Generator */
-function sinAndCos() {
-    console.log("Sin e Cos");
-    var sin = [],sin2 = [],
-        cos = [];
-
-    //Data is represented as an array of {x,y} pairs.
-    for (var i = 0; i < 100; i++) {
-        sin.push({x: i, y: Math.sin(i/10)});
-        sin2.push({x: i, y: i % 10 == 5 ? null : Math.sin(i/10) *0.25 + 0.5});
-        cos.push({x: i, y: .5 * Math.cos(i/10+ 2) + Math.random() / 10});
-    }
-
-    //Line chart data should be sent as an array of series objects.
-    return [
-        {
-            values: sin,      //values - represents the array of {x,y} data points
-            key: 'Sine Wave', //key  - the name of the series.
-            color: '#ff7f0e'  //color - optional: choose your own line color.
-        },
-        {
-            values: cos,
-            key: 'Cosine Wave',
-            color: '#2ca02c'
-        },
-        {
-            values: sin2,
-            key: 'Another sine wave',
-            color: '#7777ff',
-            area: true      //area - set to true if you want this line to turn into a filled area chart.
-        }
-    ];
-};
-
+    };
+  
 });
