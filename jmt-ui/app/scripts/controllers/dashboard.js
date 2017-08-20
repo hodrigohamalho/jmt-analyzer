@@ -2,21 +2,22 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
   var apiHost = 'http://localhost:3000/';
   var poolingInterval = 1000;
 
-  var heap = {
-      inuse: [],
-      max: []
-  };
+  var memoirs = {
+    heap: {
+        metrics: [],
+        max: [] // it needs to be in a differente array for compatibility with graph component
+    }
+  }
 
   var crawler = function(kubernetes){
-    var kubernetes = {
+    $scope.kubernetes = {
         project: 'myproject',
         podname: 'fis-rest-1-8xp34'
     };
-
       
     $http({
         method: 'GET',
-        url: apiHost+kubernetes.project+'/'+kubernetes.podname,
+        url: apiHost+$scope.kubernetes.project+'/'+$scope.kubernetes.podname,
     }).then(function successCallback(response) {
         console.log('data collected');
         var memory = response.data;
@@ -37,29 +38,32 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
     var totalGraph = function(memory){
         $scope.totalMetrics = {
             "title": "Total Memory",
-            "ranges": [0,memory['total']['max']],
-            "measures": [memory['total']['inuse']]
+            "subtitle": "in MB",
+            "ranges": [0,memory.total.max],
+            "measures": [memory.total.inuse]
         }
     }
 
     var heapGraph = function (memory){
-        heap['inuse'].push({ y: memory['heap']['inuse'], x: heap['inuse'].length });
-        heap['max'].push({ y: memory['heap']['max'], x: heap['max'].length });
-
+        var dt = new Date();
+        memoirs.heap.metrics.push({y: memory.heap.inuse, x: dt});
+        memoirs.heap.max.push({y: memory.heap.max, x:dt});
         $scope.heapMetrics = heapData();
     }
 
     var heapData = function(){
         return [
             {
-                values: heap['inuse'],      //values - represents the array of {x,y} data points
+                values: memoirs.heap.metrics, //values - represents the array of {x,y} data points
                 key: 'In use', //key  - the name of the series.
-                color: '#ff7f0e'  //color - optional: choose your own line color.
+                color: '#0000FF',  //color - optional: choose your own line color.
+                area: true
             },
             {
-                values: heap['max'],
+                values: memoirs.heap.max,
                 key: 'Memory available',
-                color: '#2ca02c'
+                color: '#2ca02c',
+                area: true
             }
         ];
     };
@@ -93,7 +97,10 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
                 tooltipHide: function(e){ console.log("tooltipHide"); }
             },
             xAxis: {
-                axisLabel: 'Time (minute)'
+                axisLabel: 'Time (minute)',
+                tickFormat: function(d) {
+                    return d3.time.format('%H:%m:%S')(new Date(d))
+                },
             },
             yAxis: {
                 axisLabel: 'Memory (MB)',
@@ -102,10 +109,6 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
             callback: function(chart){
                 console.log("!!! lineChart callback !!!");
             }
-        },
-        title: {
-            enable: true,
-            text: 'Memory Heap'
         }
     };
   
