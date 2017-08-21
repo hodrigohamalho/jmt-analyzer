@@ -7,6 +7,7 @@ It summarizes those statistics and display it in a dashboard.
 It's helpful to do tuning, find memory leaks, etc.
 
 ![Java Memory Tracking Dashboard](doc/dashboard.png)
+![Java Memory Tracking Dashboard 2](doc/dashboard2.png)
 
 ## Requirements
 
