@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 var crawler = require('./src/routes/crawler.js');
-routes(crawler);
+crawler(app);
 
 console.log('Server started on: ' + port);
 
