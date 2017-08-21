@@ -12,6 +12,7 @@ module.exports = function(app) {
 
     var cmd = `oc -n ${project} rsh ${pod} jcmd 1 VM.native_memory summary`;
 
+    // system call to oc client
     exec(cmd, (err, stdout, stderr) => {
 
       var memory = {

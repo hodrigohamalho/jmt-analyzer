@@ -10,8 +10,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
-var routes = require('./src/routes/routes.js');
-routes(app);
+var crawler = require('./src/routes/crawler.js');
+routes(crawler);
 
 console.log('Server started on: ' + port);
 
