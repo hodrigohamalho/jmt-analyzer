@@ -29,6 +29,7 @@ Your java application under analisys must have the parameter `-XX:NativeMemoryTr
 
 ```
     cd jmt-api
+    npm install
     npm start run 
 ```
 
@@ -38,6 +39,7 @@ It starts a server in http://localhost:3000
 
 ```
     cd jmt-ui
+    npm install
     npm start run 
 ```
 
