@@ -1,7 +1,7 @@
-<div class="row">
+<div class="row" ng-controller="dashboardCtrl">
     <div class="col-md-12">
         <div>
-            <form class="form-horizontal kub-form" role="form" ng-submit="collect()">
+            <form class="form-horizontal kub-form" role="form" ng-submit="collect()" ng-show="!showNativeApp">
                 <div>
                     <input type="text" ng-model="kubernetes.project" placeholder="project" />
                     <input type="text" ng-model="kubernetes.podname" placeholder="POD name"/>
@@ -11,8 +11,25 @@
                 </div>
             </form>
         </div>
+        <div>
+            <form class="form-horizontal kub-form" role="form" ng-submit="collect(); showPanel = true; " ng-show="showNativeApp">
+                <div>
+                    <input type="text" ng-model="native.process" placeholder="process id" />                    
+                    <button type="submit" class="btn btn-primary">
+                        <span class="fa fa-refresh"></span> Start collect!
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-click="showNativeApp = !showNativeApp" > Native Application
+                </label>
+            </div>
+        </div>
         
-        <div ng-controller="dashboardCtrl">
+        <div ng-show="showPanel">
             <div class="page-header">
                 Memory metrics for POD {{kubernetes.podname}}
             </div>

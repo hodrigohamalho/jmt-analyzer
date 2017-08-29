@@ -4,18 +4,24 @@ const { exec } = require('child_process');
 
 module.exports = function(app) {
 
-
-  app.get('/:project/:pod', function(req, res){
-
+  app.get('/metrics/:project/:pod', function(req, res){
     var project = req.params.project;
     var pod = req.params.pod;
-
     var cmd = `oc -n ${project} rsh ${pod} jcmd 1 VM.native_memory summary`;
 
-    // system call to oc client
-    exec(cmd, (err, stdout, stderr) => {
+    var memory = getJVMMetrics(cmd, res);
+    res.send(memory);
+  });
 
-      var memory = {
+  app.get('/metrics/:processid', function(req, res){
+    var processid = req.params.processid;
+    var cmd = `jcmd ${processid} VM.native_memory summary`;
+    
+    var memory = getJVMMetrics(cmd, res);
+  });
+
+  function getJVMMetrics(cmd, res){
+    var memory = {
         total: { inuse: 0, max: 0 },
         heap: { inuse: 0, max: 0},
         class: { inuse: 0, max: 0},
@@ -24,6 +30,7 @@ module.exports = function(app) {
         gc: { inuse: 0, max: 0},
       }
 
+    exec(cmd, (err, stdout, stderr) => {   
       var lines = stdout.split(/\r?\n/);
 
       lines.forEach(function(line){
@@ -47,10 +54,10 @@ module.exports = function(app) {
           memory['gc']['max'] = extractValueFromField(line, 'reserved');
         }
       });
-
+      
       res.send(memory);
     });
-  });
+  }
 
   function extractValueFromField(line, field){
     var valueInMB = 0;
@@ -74,5 +81,4 @@ module.exports = function(app) {
   function convertToMB(value){
      return Math.trunc(value/1000);
   }
-
-};
+}

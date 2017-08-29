@@ -1,5 +1,5 @@
 angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scope, $http, $interval) {
-  var apiHost = 'http://localhost:3000/';
+  var apiHost = 'http://localhost:3000/metrics/';
   var poolingInterval = 1000;
 
   var memoirs = {
@@ -21,17 +21,27 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
     }
   }
 
-    var crawler = function(kubernetes){
+    $scope.showPanel = false;
+    $scope.showNativeApp = false;
+    
+
+    var crawler = function(){
         $scope.kubernetes = {
             project: 'myproject',
             podname: 'fis-rest-1-8xp34'
         };
+
+        var getUrl = '';
+        if ($scope.native.process){
+            getUrl = apiHost+$scope.native.process;
+        }else{
+            getUrl = apiHost+$scope.kubernetes.project+'/'+$scope.kubernetes.podname;
+        }
             
         $http({
             method: 'GET',
-            url: apiHost+$scope.kubernetes.project+'/'+$scope.kubernetes.podname,
+            url: getUrl,
         }).then(function successCallback(response) {
-            console.log('data collected');
             var memory = response.data;
 
             totalGraph(memory);
@@ -126,7 +136,7 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
                 axisLabelDistance: -10
             },
             callback: function(chart){
-                console.log("!!! lineChart callback !!!");
+                // console.log("!!! lineChart callback !!!");
             }
         }
     };
