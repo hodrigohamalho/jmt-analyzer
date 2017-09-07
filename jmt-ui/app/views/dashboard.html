@@ -14,7 +14,10 @@
         <div>
             <form class="form-horizontal kub-form" role="form" ng-submit="collect(); showPanel = true; " ng-show="!showKubernetes">
                 <div>
-                    <input type="text" ng-model="native.process" placeholder="process id" />                    
+                    <ul class="list-process list-group" ng-repeat="p in process">
+                        <li class="list-group-item" ng-click="selectProcess(p.id)">{{p.id}} - {{p.description}}</li>
+                    </ul>
+                    <input type="text" ng-model="nativeProcess" placeholder="process id" />                    
                     <button type="submit" class="btn btn-primary">
                         <span class="fa fa-refresh"></span> Start collect!
                     </button>

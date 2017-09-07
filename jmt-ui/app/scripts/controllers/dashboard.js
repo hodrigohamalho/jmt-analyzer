@@ -1,41 +1,49 @@
 angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scope, $http, $interval) {
-  var apiHost = 'http://localhost:3000/metrics/';
-  var poolingInterval = 1000;
+    var apiHost = 'http://localhost:3000/';
+    var poolingInterval = 1000;
 
-  var memoirs = {
-    heap: {
-        metrics: [],
-        max: [] // it needs to be in a differente array for compatibility with graph component
-    },
-    class: {
-        metrics: [],
-        max: [] 
-    },
-    code: {
-        metrics: [],
-        max: [] 
-    },
-    thread: {
-        metrics: [],
-        max: [] 
+    var memoirs = {
+        heap: {
+            metrics: [],
+            max: [] // it needs to be in a differente array for compatibility with graph component
+        },
+        class: {
+            metrics: [],
+            max: [] 
+        },
+        code: {
+            metrics: [],
+            max: [] 
+        },
+        thread: {
+            metrics: [],
+            max: [] 
+        }
     }
-  }
 
     $scope.showPanel = false;
     $scope.showKubernetes = false;
-    
+
+    $scope.selectProcess = function(id){
+        console.log("entrei");
+        $scope.nativeProcess = id;
+    }
+
+    var listProcess = function (){
+        $http({
+            method: 'GET',
+            url: apiHost+'local-process',
+        }).then(function successCallback(response) {
+            $scope.process = response.data;
+        });
+    }
 
     var crawler = function(){
-        $scope.kubernetes = {
-            project: 'myproject',
-            podname: 'fis-rest-1-8xp34'
-        };
-
         var getUrl = '';
-        if ($scope.native.process){
-            getUrl = apiHost+$scope.native.process;
+        if ($scope.nativeProcess){
+            getUrl = apiHost+'metrics/'+$scope.nativeProcess;
         }else{
-            getUrl = apiHost+$scope.kubernetes.project+'/'+$scope.kubernetes.podname;
+            getUrl = apiHost+'metrics/'+$scope.kubernetes.project+'/'+$scope.kubernetes.podname;
         }
             
         $http({
@@ -140,5 +148,7 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
             }
         }
     };
+
+    listProcess();
   
 });

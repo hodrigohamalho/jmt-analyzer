@@ -16,3 +16,9 @@
     -webkit-box-shadow: none;
     box-shadow: none;
 }
+
+.list-process li:hover  {
+    background-color: #B7D4C5;
+    color: #FFC0CB;
+    cursor: pointer;
+}
