@@ -20,6 +20,28 @@ module.exports = function(app) {
     var memory = getJVMMetrics(cmd, res);
   });
 
+  app.get('/local-process', function(req, res){
+    var cmd = `jps`;
+    var process = [];
+
+    exec(cmd, (err, stdout, stderr) => {   
+      var lines = stdout.split(/\r?\n/);
+      lines.forEach(function(line){
+        if (line){
+          var lineSplitted = line.split(' ');
+          process.push(
+            {
+              id: lineSplitted[0],
+              description: lineSplitted[1]
+            }
+          );
+        }
+      });
+
+      res.send(process);
+    });
+  });
+
   function getJVMMetrics(cmd, res){
     var memory = {
         total: { inuse: 0, max: 0 },
