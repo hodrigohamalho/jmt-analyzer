@@ -22,7 +22,7 @@ angular.module('jmt-ui').controller('dashboardCtrl', function ($rootScope, $scop
   }
 
     $scope.showPanel = false;
-    $scope.showNativeApp = false;
+    $scope.showKubernetes = false;
     
 
     var crawler = function(){

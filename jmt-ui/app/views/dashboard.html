@@ -1,7 +1,7 @@
 <div class="row" ng-controller="dashboardCtrl">
     <div class="col-md-12">
         <div>
-            <form class="form-horizontal kub-form" role="form" ng-submit="collect()" ng-show="!showNativeApp">
+            <form class="form-horizontal kub-form" role="form" ng-submit="collect()" ng-show="showKubernetes">
                 <div>
                     <input type="text" ng-model="kubernetes.project" placeholder="project" />
                     <input type="text" ng-model="kubernetes.podname" placeholder="POD name"/>
@@ -12,7 +12,7 @@
             </form>
         </div>
         <div>
-            <form class="form-horizontal kub-form" role="form" ng-submit="collect(); showPanel = true; " ng-show="showNativeApp">
+            <form class="form-horizontal kub-form" role="form" ng-submit="collect(); showPanel = true; " ng-show="!showKubernetes">
                 <div>
                     <input type="text" ng-model="native.process" placeholder="process id" />                    
                     <button type="submit" class="btn btn-primary">
@@ -24,7 +24,7 @@
         <div>
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" ng-click="showNativeApp = !showNativeApp" > Native Application
+                    <input type="checkbox" ng-click="showKubernetes = !showKubernetes" > Application in Kubernetes?
                 </label>
             </div>
         </div>
